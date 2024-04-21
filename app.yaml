@@ -1,0 +1,16 @@
+runtime: java17
+env: standard
+instance_class: B1
+network:
+  forwarded_ports:
+    - 8080/tcp
+handlers:
+  - url: .*
+    script: auto
+basic_scaling:
+  max_instances: 10
+  idle_timeout: 10m
+service_account: smartfood-app-406605@appspot.gserviceaccount.com
+
+
+
