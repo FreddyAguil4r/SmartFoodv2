@@ -6,7 +6,6 @@ import com.spring.implementation.dto.SaveSupplierDto;
 import com.spring.implementation.dto.SupplierDto;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,10 +17,9 @@ import jakarta.validation.Valid;
 @RequestMapping("/supplier")
 @CrossOrigin(origins = "*")
 public class SupplierController {
-    @Autowired
+
     private SupplierService supplierService;
 
-    @Autowired
     private final ModelMapper mapper;
 
     @PostMapping

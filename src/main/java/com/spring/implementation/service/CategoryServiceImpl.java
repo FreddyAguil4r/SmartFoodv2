@@ -17,10 +17,20 @@ import java.util.NoSuchElementException;
 @Service
 public class CategoryServiceImpl implements CategoryService {
 
-    @Autowired
+    static final String CATEGORY_NOT_FOUND = "Category not found with ID: ";
+
     private CategoryRepository categoryRepository;
-    @Autowired
+
     private InventoryService inventoryService;
+
+    @Autowired
+    public CategoryServiceImpl(CategoryRepository categoryRepository, InventoryService inventoryService) {
+        this.categoryRepository = categoryRepository;
+        this.inventoryService = inventoryService;
+    }
+
+    public CategoryServiceImpl() {
+    }
 
     @Override
     public Category createCategory(Category category) {
@@ -52,7 +62,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public ResponseEntity<?> deleteCategory(Integer categoryId) {
         Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new NoSuchElementException("Category not found with ID: " + categoryId));
+                .orElseThrow(() -> new NoSuchElementException(CATEGORY_NOT_FOUND + categoryId));
         categoryRepository.delete(category);
         return ResponseEntity.ok().build();
     }
@@ -60,7 +70,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Category getCategoryById(Integer categoryId) {
         return categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new NoSuchElementException("Category not found with ID: " + categoryId));
+                .orElseThrow(() -> new NoSuchElementException(CATEGORY_NOT_FOUND + categoryId));
     }
     @Override
     public Category updateCategory(Integer categoryId, Category categoryRequest) {
@@ -68,7 +78,7 @@ public class CategoryServiceImpl implements CategoryService {
             category.setName(categoryRequest.getName());
             category.setTotalValuesCategories(categoryRequest.getTotalValuesCategories());
             return categoryRepository.save(category);
-        }).orElseThrow(() -> new NoSuchElementException("Category not found with ID: " + categoryId));
+        }).orElseThrow(() -> new NoSuchElementException(CATEGORY_NOT_FOUND + categoryId));
     }
 
     @Override

@@ -13,7 +13,6 @@ import com.spring.implementation.dto.SaveProductDto;
 import com.spring.implementation.domain.model.Category;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,16 +26,12 @@ import jakarta.validation.Valid;
 @CrossOrigin(origins = "*")
 public class ProductController {
 
-    @Autowired
     private ProductService productService;
 
-    @Autowired
     private CategoryService categoryService;
 
-    @Autowired
     private SupplierService supplierService;
 
-    @Autowired
     private final ModelMapper mapper;
 
     @PostMapping
@@ -79,9 +74,6 @@ public class ProductController {
     public Iterable<CategoriesAndProductsDto> getAllCategoriesWithProducts() {
         return productService.getAllCategoriesWithProducts();
     }
-
-
-
 
     private Product convertToEntity(SaveProductDto dto) {
         Product product = new Product();

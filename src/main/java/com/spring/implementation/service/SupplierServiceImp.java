@@ -1,7 +1,5 @@
 package com.spring.implementation.service;
 
-
-
 import com.spring.implementation.domain.model.Supplier;
 import com.spring.implementation.domain.repository.SupplierRepository;
 import com.spring.implementation.domain.service.SupplierService;
@@ -15,8 +13,17 @@ import java.util.NoSuchElementException;
 @Service
 public class SupplierServiceImp implements SupplierService {
 
-    @Autowired
+    static final String SUPPLIER_NOT_FOUND = "Supplier not found with ID: ";
+
     private SupplierRepository supplierRepository;
+
+    @Autowired
+    public SupplierServiceImp(SupplierRepository supplierRepository) {
+        this.supplierRepository = supplierRepository;
+    }
+
+    public SupplierServiceImp() {
+    }
 
     @Override
     public Supplier createSupplier(Supplier supplier) {
@@ -26,7 +33,7 @@ public class SupplierServiceImp implements SupplierService {
     @Override
     public Supplier getSupplierById(Integer supplierId) {
         return supplierRepository.findById(supplierId)
-                .orElseThrow(() -> new NoSuchElementException("Supplier not found with ID: " + supplierId));
+                .orElseThrow(() -> new NoSuchElementException(SUPPLIER_NOT_FOUND + supplierId));
     }
 
     @Override
@@ -36,13 +43,13 @@ public class SupplierServiceImp implements SupplierService {
             supplier.setRuc(supplierRequest.getRuc());
             supplier.setAddress(supplierRequest.getAddress());
             return supplierRepository.save(supplier);
-        }).orElseThrow(() -> new NoSuchElementException("Supplier not found with ID: " + supplierId));
+        }).orElseThrow(() -> new NoSuchElementException(SUPPLIER_NOT_FOUND + supplierId));
     }
 
     @Override
     public ResponseEntity<?> deleteSupplier(Integer supplierId) {
         Supplier supplier = supplierRepository.findById(supplierId)
-                .orElseThrow(() -> new NoSuchElementException("Supplier not found with ID: " + supplierId));
+                .orElseThrow(() -> new NoSuchElementException(SUPPLIER_NOT_FOUND + supplierId));
 
         supplierRepository.delete(supplier);
         return ResponseEntity.ok().build();

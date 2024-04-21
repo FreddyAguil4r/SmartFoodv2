@@ -19,19 +19,25 @@ import jakarta.persistence.EntityNotFoundException;
 import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    @Autowired
     private ProductRepository productRepository;
 
-    @Autowired
     private CategoryService categoryService;
 
-    @Autowired
     private InventoryService inventoryService;
+
+    @Autowired
+    public ProductServiceImpl(ProductRepository productRepository, CategoryService categoryService, InventoryService inventoryService) {
+        this.productRepository = productRepository;
+        this.categoryService = categoryService;
+        this.inventoryService = inventoryService;
+    }
+
+    public ProductServiceImpl() {
+    }
 
     @Override
     public Product createProduct(Product product) {
@@ -52,10 +58,10 @@ public class ProductServiceImpl implements ProductService {
 
         // Actualizar el valor de la categoría
         float currentTotal = category.getTotalValuesCategories();
-        float VALOR_A_SUMAR= product.getAmount()*product.getUnitCost();
+        float valorASumar = product.getAmount() * product.getUnitCost();
 
-        product.setWarehouseValue(VALOR_A_SUMAR);
-        category.setTotalValuesCategories(currentTotal + VALOR_A_SUMAR);
+        product.setWarehouseValue(valorASumar);
+        category.setTotalValuesCategories(currentTotal + valorASumar);
         categoryService.updateCategory(category.getId(), category);
 
         // Actualizar el valor del inventario
@@ -67,7 +73,7 @@ public class ProductServiceImpl implements ProductService {
             inventory.setTotalInventory(product.getAmount());
             inventoryService.createInventory(inventory);
         } else {
-            inventory.setTotalInventory(inventory.getTotalInventory() + VALOR_A_SUMAR);
+            inventory.setTotalInventory(inventory.getTotalInventory() + valorASumar);
             inventoryService.updateInventory(inventory.getId(), inventory);
         }
         product.setCategory(category);
@@ -82,13 +88,13 @@ public class ProductServiceImpl implements ProductService {
         Product productToDelete = productRepository.findById(productId)
                 .orElseThrow(() -> new EntityNotFoundException("Product not found"));
 
-        float VALOR_A_RESTAR= productToDelete.getAmount()*productToDelete.getUnitCost();
+        float valorARestar = productToDelete.getAmount()*productToDelete.getUnitCost();
 
         // Restar el valor del producto de la categoría
         Category category = productToDelete.getCategory();
         if (category != null) {
             float currentTotal = category.getTotalValuesCategories();
-            category.setTotalValuesCategories(currentTotal - VALOR_A_RESTAR);
+            category.setTotalValuesCategories(currentTotal - valorARestar);
             categoryService.updateCategory(category.getId(), category);
         }
 
@@ -97,7 +103,7 @@ public class ProductServiceImpl implements ProductService {
         if (inventory != null) {
             Inventory newInventory = new Inventory();
             newInventory.setCurrentSystem(new Date());
-            newInventory.setTotalInventory(inventory.getTotalInventory() - VALOR_A_RESTAR);
+            newInventory.setTotalInventory(inventory.getTotalInventory() - valorARestar);
             inventoryService.createInventory(newInventory);
         }
 
@@ -162,11 +168,11 @@ public class ProductServiceImpl implements ProductService {
                                         shortProductDto.setDueDate(product.getDueDate());
                                         return shortProductDto;
                                     })
-                                    .collect(Collectors.toList())
+                                    .toList()
                     );
                     return categoriesAndProductsDto;
                 })
-                .collect(Collectors.toList());
+                .toList();
     }
 
 }

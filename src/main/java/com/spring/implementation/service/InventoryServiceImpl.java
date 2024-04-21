@@ -14,8 +14,15 @@ import java.util.List;
 @Service
 public class InventoryServiceImpl implements InventoryService {
 
-    @Autowired
     private InventoryRepository inventoryRepository;
+
+    @Autowired
+    public InventoryServiceImpl(InventoryRepository inventoryRepository) {
+        this.inventoryRepository = inventoryRepository;
+    }
+
+    public InventoryServiceImpl() {
+    }
 
     @Override
     public Inventory createInventory(Inventory inventory) {
@@ -45,7 +52,6 @@ public class InventoryServiceImpl implements InventoryService {
     public List<Inventory> getAllInventories() {
 
         return inventoryRepository.findAll();
-
 
     }
     @Override
