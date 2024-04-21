@@ -21,7 +21,7 @@ public interface SupplierService {
     Supplier updateSupplier(Integer supplierId, Supplier supplierRequest);
 
     //delete
-    ResponseEntity<?> deleteSupplier(Integer supplierId);
+    ResponseEntity<Void> deleteSupplier(Integer supplierId);
 
     List<Supplier> getAllSuppliers();
 

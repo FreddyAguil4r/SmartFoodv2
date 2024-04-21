@@ -83,7 +83,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ResponseEntity<?> deleteProduct(Integer productId) {
+    public ResponseEntity<Void> deleteProduct(Integer productId) {
 
         Product productToDelete = productRepository.findById(productId)
                 .orElseThrow(() -> new EntityNotFoundException("Product not found"));

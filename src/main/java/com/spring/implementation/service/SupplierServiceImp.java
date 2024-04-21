@@ -47,7 +47,7 @@ public class SupplierServiceImp implements SupplierService {
     }
 
     @Override
-    public ResponseEntity<?> deleteSupplier(Integer supplierId) {
+    public ResponseEntity<Void> deleteSupplier(Integer supplierId) {
         Supplier supplier = supplierRepository.findById(supplierId)
                 .orElseThrow(() -> new NoSuchElementException(SUPPLIER_NOT_FOUND + supplierId));
 

@@ -60,7 +60,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public ResponseEntity<?> deleteCategory(Integer categoryId) {
+    public ResponseEntity<Void> deleteCategory(Integer categoryId) {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new NoSuchElementException(CATEGORY_NOT_FOUND + categoryId));
         categoryRepository.delete(category);

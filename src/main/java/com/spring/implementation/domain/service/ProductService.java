@@ -21,7 +21,7 @@ public interface ProductService {
     Product updateProduct(Integer productId, Product productRequest);
 
     //delete
-    ResponseEntity<?> deleteProduct(Integer productId);
+    ResponseEntity<Void> deleteProduct(Integer productId);
 
     List<Product> getAllProducts();
 

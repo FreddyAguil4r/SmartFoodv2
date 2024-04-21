@@ -40,7 +40,7 @@ public class CategoryController {
     }
 
     @DeleteMapping("/{categoryId}")
-    public ResponseEntity<?> deleteCategory(@PathVariable Integer categoryId) {
+    public ResponseEntity<Void> deleteCategory(@PathVariable Integer categoryId) {
         return categoryService.deleteCategory(categoryId);
     }
 

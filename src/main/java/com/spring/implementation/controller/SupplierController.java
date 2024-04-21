@@ -40,7 +40,7 @@ public class SupplierController {
 
 
     @DeleteMapping("/{supplierId}")
-    public ResponseEntity<?> deleteSupplier(@PathVariable Integer supplierId) {
+    public ResponseEntity<Void> deleteSupplier(@PathVariable Integer supplierId) {
         return supplierService.deleteSupplier(supplierId);
     }
 

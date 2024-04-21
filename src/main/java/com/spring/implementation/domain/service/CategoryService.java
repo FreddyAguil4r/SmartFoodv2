@@ -22,7 +22,7 @@ public interface CategoryService {
     Category updateCategory(Integer categoryId, Category categoryRequest);
 
     //delete
-    ResponseEntity<?> deleteCategory(Integer categoryId);
+    ResponseEntity<Void> deleteCategory(Integer categoryId);
 
     //getAll
     List<Category> getAllCategories();
