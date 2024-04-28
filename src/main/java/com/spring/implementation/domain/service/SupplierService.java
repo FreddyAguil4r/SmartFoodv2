@@ -12,19 +12,15 @@ import java.util.List;
 public interface SupplierService {
 
     Supplier createSupplier(Supplier supplier);
-    //read
 
+    //read
     Supplier getSupplierById(Integer supplierId);
 
     //update
-
     Supplier updateSupplier(Integer supplierId, Supplier supplierRequest);
 
     //delete
     ResponseEntity<Void> deleteSupplier(Integer supplierId);
 
     List<Supplier> getAllSuppliers();
-
-
-
 }

@@ -32,5 +32,6 @@ public interface ProductService {
     //getAllCategoriesWithProducts
     List<CategoriesAndProductsDto> getAllCategoriesWithProducts();
 
+    boolean findProductBySupplierId(Integer supplierId);
 
 }

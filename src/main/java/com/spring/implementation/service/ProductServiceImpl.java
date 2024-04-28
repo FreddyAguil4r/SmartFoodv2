@@ -42,15 +42,6 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product createProduct(Product product) {
 
-        //no se puede registrar un producto si no hay el category
-        //validar que el category exista
-        //si no existe, lanzar throw
-        //si existe, crear el producto
-        //si existe, actualizar el valor total de la categoría
-        //si existe, actualizar el valor total del inventario
-        //si existe, guardar el producto
-        //si existe, retornar el producto
-        //si no existe, lanzar throw
         Category category = categoryService.getCategoryById(product.getCategory().getId());
         if (category == null) {
             throw new NoSuchElementException("Category not found with ID: " + product.getCategory().getId());
@@ -111,6 +102,10 @@ public class ProductServiceImpl implements ProductService {
 
         return ResponseEntity.ok().build();
     }
+
+    //getProductBySupplierId
+
+
 
     @Override
     public Product getProductById(Integer productId) {
@@ -173,6 +168,11 @@ public class ProductServiceImpl implements ProductService {
                     return categoriesAndProductsDto;
                 })
                 .toList();
+    }
+
+    @Override
+    public boolean findProductBySupplierId(Integer supplierId) {
+        return productRepository.existsBySupplierId(supplierId);
     }
 
 }
