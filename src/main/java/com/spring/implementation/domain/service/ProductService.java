@@ -3,6 +3,7 @@ package com.spring.implementation.domain.service;
 
 import com.spring.implementation.domain.model.Product;
 import com.spring.implementation.dto.CategoriesAndProductsDto;
+import com.spring.implementation.dto.UpdateProductDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +19,7 @@ public interface ProductService {
 
     //update
 
-    Product updateProduct(Integer productId, Product productRequest);
+    Product updateProduct(Integer productId, UpdateProductDto productRequest);
 
     //delete
     ResponseEntity<Void> deleteProduct(Integer productId);

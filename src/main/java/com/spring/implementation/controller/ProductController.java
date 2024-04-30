@@ -11,6 +11,7 @@ import com.spring.implementation.dto.CategoriesAndProductsDto;
 import com.spring.implementation.dto.ProductDto;
 import com.spring.implementation.dto.SaveProductDto;
 import com.spring.implementation.domain.model.Category;
+import com.spring.implementation.dto.UpdateProductDto;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
@@ -46,7 +47,7 @@ public class ProductController {
     }
 
     @PutMapping("/{productId}")
-    public Product updateProduct(@PathVariable Integer productId, @RequestBody Product productRequest) {
+    public Product updateProduct(@PathVariable Integer productId, @RequestBody UpdateProductDto productRequest) {
         return productService.updateProduct(productId, productRequest);
     }
 

@@ -11,6 +11,7 @@ import com.spring.implementation.domain.service.InventoryService;
 import com.spring.implementation.domain.service.ProductService;
 import com.spring.implementation.dto.CategoriesAndProductsDto;
 import com.spring.implementation.dto.ShortProductDto;
+import com.spring.implementation.dto.UpdateProductDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -114,16 +115,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product updateProduct(Integer productId, Product productRequest) {
+    public Product updateProduct(Integer productId, UpdateProductDto productRequest) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new NoSuchElementException("Product not found with ID: " + productId));
 
         product.setName(productRequest.getName());
-        product.setDatePurchase(productRequest.getDatePurchase());
-        product.setDueDate(productRequest.getDueDate());
         product.setUnitCost(productRequest.getUnitCost());
         product.setAmount(productRequest.getAmount());
-        product.setWarehouseValue(productRequest.getWarehouseValue());
 
         return productRepository.save(product);
     }
