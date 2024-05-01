@@ -119,12 +119,15 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new NoSuchElementException("Product not found with ID: " + productId));
 
-        //actualizar el valor de la categoría
         Category category = product.getCategory();
+        Inventory inventory = inventoryService.getLatestInventory();
+
         float currentTotal = category.getTotalValuesCategories();
         float valorARestar = product.getAmount() * product.getUnitCost();
         category.setTotalValuesCategories(currentTotal - valorARestar);
-        float newValue = category.getTotalValuesCategories();
+        inventory.setTotalInventory(inventory.getTotalInventory() - valorARestar);
+        float newValueCategory = category.getTotalValuesCategories();
+        float newValueInventory = inventory.getTotalInventory();
 
         product.setName(productRequest.getName());
         product.setUnitCost(productRequest.getUnitCost());
@@ -132,8 +135,10 @@ public class ProductServiceImpl implements ProductService {
 
 
         float valorASumar = productRequest.getAmount() * productRequest.getUnitCost();
-        category.setTotalValuesCategories(newValue + valorASumar);
+        category.setTotalValuesCategories(newValueCategory + valorASumar);
         categoryService.updateCategory(category.getId(), category);
+        inventory.setTotalInventory(newValueInventory + valorASumar);
+        inventoryService.updateInventory(inventory.getId(), inventory);
 
         return productRepository.save(product);
     }
