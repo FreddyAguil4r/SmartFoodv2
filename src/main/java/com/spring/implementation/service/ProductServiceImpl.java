@@ -119,9 +119,21 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new NoSuchElementException("Product not found with ID: " + productId));
 
+        //actualizar el valor de la categoría
+        Category category = product.getCategory();
+        float currentTotal = category.getTotalValuesCategories();
+        float valorARestar = product.getAmount() * product.getUnitCost();
+        category.setTotalValuesCategories(currentTotal - valorARestar);
+        float newValue = category.getTotalValuesCategories();
+
         product.setName(productRequest.getName());
         product.setUnitCost(productRequest.getUnitCost());
         product.setAmount(productRequest.getAmount());
+
+
+        float valorASumar = productRequest.getAmount() * productRequest.getUnitCost();
+        category.setTotalValuesCategories(newValue + valorASumar);
+        categoryService.updateCategory(category.getId(), category);
 
         return productRepository.save(product);
     }

@@ -74,11 +74,17 @@ public class CategoryServiceImpl implements CategoryService {
     }
     @Override
     public Category updateCategory(Integer categoryId, Category categoryRequest) {
-        return categoryRepository.findById(categoryId).map(category -> {
-            category.setName(categoryRequest.getName());
-            category.setTotalValuesCategories(categoryRequest.getTotalValuesCategories());
-            return categoryRepository.save(category);
-        }).orElseThrow(() -> new NoSuchElementException(CATEGORY_NOT_FOUND + categoryId));
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new NoSuchElementException(CATEGORY_NOT_FOUND + categoryId));
+
+        category.setName(categoryRequest.getName());
+        category.setTotalValuesCategories(categoryRequest.getTotalValuesCategories());
+        return categoryRepository.save(category);
+//        return categoryRepository.findById(categoryId).map(category -> {
+//            category.setName(categoryRequest.getName());
+//            category.setTotalValuesCategories(categoryRequest.getTotalValuesCategories());
+//            return categoryRepository.save(category);
+//        }).orElseThrow(() -> new NoSuchElementException(CATEGORY_NOT_FOUND + categoryId));
     }
 
     @Override
@@ -86,6 +92,5 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryRepository.findAll();
 
     }
-
 }
 
