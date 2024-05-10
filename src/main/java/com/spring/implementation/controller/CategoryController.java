@@ -2,14 +2,17 @@ package com.spring.implementation.controller;
 
 import com.spring.implementation.domain.model.Category;
 import com.spring.implementation.domain.service.CategoryService;
-import com.spring.implementation.dto.CategoryDto;
-import com.spring.implementation.dto.SaveCategoryDto;
+import com.spring.implementation.dto.CategoryWithProductQttyDto;
+import com.spring.implementation.dto.domain.CategoryDto;
+import com.spring.implementation.dto.save.SaveCategoryDto;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
+
+import java.util.List;
 
 
 @RestController
@@ -18,15 +21,11 @@ import jakarta.validation.Valid;
 @CrossOrigin(origins = "*")
 public class CategoryController {
 
-
     private CategoryService categoryService;
 
-    private final ModelMapper mapper;
-
     @PostMapping
-    public CategoryDto createCategory(@Valid @RequestBody SaveCategoryDto resource) {
-        Category category = convertToEntity(resource);
-        return convertToResource(categoryService.createCategory(category));
+    public Category createCategory(@Valid @RequestBody SaveCategoryDto request) {
+        return categoryService.createCategory(request);
     }
 
     @GetMapping("/{categoryId}")
@@ -45,15 +44,12 @@ public class CategoryController {
     }
 
     @GetMapping("/all")
-    public Iterable<Category> getAllCategories() {
+    public List<Category> getAllCategories() {
         return categoryService.getAllCategories();
     }
 
-    private Category convertToEntity(SaveCategoryDto resource) {
-        return mapper.map(resource, Category.class);
-    }
-    private CategoryDto convertToResource(Category entity)
-    {
-        return mapper.map(entity, CategoryDto.class);
+    @GetMapping("/products/quantity")
+    public List<CategoryWithProductQttyDto> getAllCategoriesDto() {
+        return categoryService.getCategoryWithProductsAndQuantity();
     }
 }

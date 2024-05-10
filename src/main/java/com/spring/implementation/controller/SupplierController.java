@@ -2,9 +2,8 @@ package com.spring.implementation.controller;
 
 import com.spring.implementation.domain.model.Supplier;
 import com.spring.implementation.domain.service.SupplierService;
-import com.spring.implementation.dto.SaveSupplierDto;
-import com.spring.implementation.dto.SupplierDto;
-import lombok.AllArgsConstructor;
+import com.spring.implementation.dto.save.SaveSupplierDto;
+import com.spring.implementation.dto.domain.SupplierDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +12,6 @@ import jakarta.validation.Valid;
 
 
 @RestController
-@AllArgsConstructor
 @RequestMapping("/supplier")
 @CrossOrigin(origins = "*")
 public class SupplierController {
@@ -21,6 +19,12 @@ public class SupplierController {
     private SupplierService supplierService;
 
     private final ModelMapper mapper;
+
+    public SupplierController(SupplierService supplierService, ModelMapper mapper) {
+        this.supplierService = supplierService;
+        this.mapper = mapper;
+    }
+
 
     @PostMapping
     public SupplierDto createSupplier(@Valid @RequestBody SaveSupplierDto resource) {

@@ -13,13 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor
 @RequestMapping("/inventory")
 @CrossOrigin(origins = "*")
-public class InventaryController {
+public class InventoryController {
 
     private InventoryService inventoryService;
-
-    @GetMapping()
-    public Inventory getLatestInventory() {
-        return inventoryService.getLatestInventory();
-    }
-
 }

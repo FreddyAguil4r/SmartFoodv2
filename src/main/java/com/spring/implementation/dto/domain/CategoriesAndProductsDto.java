@@ -1,6 +1,7 @@
-package com.spring.implementation.dto;
+package com.spring.implementation.dto.domain;
 
 
+import com.spring.implementation.dto.ShortProductDto;
 import lombok.Getter;
 import lombok.Setter;
 

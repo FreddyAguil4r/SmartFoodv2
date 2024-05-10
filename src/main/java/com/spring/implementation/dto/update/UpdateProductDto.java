@@ -1,4 +1,4 @@
-package com.spring.implementation.dto;
+package com.spring.implementation.dto.update;
 
 import lombok.Builder;
 import lombok.Data;
@@ -8,6 +8,4 @@ import lombok.Data;
 @Builder
 public class UpdateProductDto {
     private String name;
-    private float unitCost;
-    private float amount;
 }

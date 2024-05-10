@@ -1,9 +1,6 @@
 package com.spring.implementation.domain.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import jakarta.persistence.*;
 import java.util.Date;
@@ -13,7 +10,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "inventory")
+@Table(name = "inventories")
 public class Inventory {
 
     @Id
@@ -21,11 +18,25 @@ public class Inventory {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "current_system")
-    private Date currentSystem; //creation Date
+    @Column(name = "creation_date")
+    private Date creationDate;
+
+    @Column(name = "modification_date")
+    private Date modificationDate;
 
     @Column(name = "total_inventory")
     private float totalInventory;
 
+    //quantity
+    @Column(name = "quantity")
+    private int quantity;
+
+    @ManyToOne
+    @JoinColumn(name = "unit_id")
+    private Unit unit;
+
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private Product product;
 
 }

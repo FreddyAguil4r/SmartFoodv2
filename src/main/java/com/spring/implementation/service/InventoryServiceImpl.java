@@ -1,19 +1,24 @@
 package com.spring.implementation.service;
 
-
 import com.spring.implementation.domain.model.Inventory;
 import com.spring.implementation.domain.repository.InventoryRepository;
 import com.spring.implementation.domain.service.InventoryService;
+import com.spring.implementation.dto.update.UpdateInventoryDto;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import jakarta.persistence.EntityNotFoundException;
+
+import java.util.Date;
 import java.util.List;
 
 @Service
 public class InventoryServiceImpl implements InventoryService {
 
+    static final String INVENTORY_NOT_FOUND = "No se encontró un inventario con ID: ";
     private InventoryRepository inventoryRepository;
 
     @Autowired
@@ -31,37 +36,36 @@ public class InventoryServiceImpl implements InventoryService {
 
     @Override
     public Inventory getInventoryById(Integer inventoryId) {
-        return null;
+        return inventoryRepository.findById(inventoryId)
+                .orElseThrow(() -> new EntityNotFoundException(INVENTORY_NOT_FOUND + inventoryId));
     }
 
     @Override
-    public Inventory updateInventory(Integer inventoryId, Inventory inventoryRequest) {
-        return inventoryRepository.findById(inventoryId).map(inventory -> {
-            inventory.setCurrentSystem(inventoryRequest.getCurrentSystem());
-            inventory.setTotalInventory(inventoryRequest.getTotalInventory());
-            return inventoryRepository.save(inventory);
-        }).orElseThrow(() -> new EntityNotFoundException("Inventory not found"));
+    public Inventory updateInventory(Integer inventoryId, UpdateInventoryDto inventoryRequest) {
+        Inventory inventory = inventoryRepository.findById(inventoryId)
+                .orElseThrow(() -> new EntityNotFoundException(INVENTORY_NOT_FOUND + inventoryId));
+        inventory.setModificationDate(new Date());
+        inventory.setTotalInventory(inventoryRequest.getTotalInventory());
+        inventory.setQuantity(inventoryRequest.getQuantity());
+        return inventoryRepository.save(inventory);
     }
 
     @Override
-    public ResponseEntity<?> deleteInventory(Integer inventoryId) {
-        return null;
+    public ResponseEntity<Void> deleteInventory(Integer inventoryId) {
+        Inventory inventory = inventoryRepository.findById(inventoryId)
+                .orElseThrow(() -> new EntityNotFoundException(INVENTORY_NOT_FOUND + inventoryId));
+        inventoryRepository.delete(inventory);
+        return ResponseEntity.ok().build();
     }
 
     @Override
     public List<Inventory> getAllInventories() {
-
         return inventoryRepository.findAll();
-
     }
+
     @Override
-    public Inventory getLatestInventory() {
-        List<Inventory> inventories = inventoryRepository.findAll();
-        if (!inventories.isEmpty()) {
-            // Devuelve el último inventario registrado (asumiendo que están ordenados por ID)
-            return inventories.get(inventories.size() - 1);
-        }
-        return null;
+    public Inventory findInventoryByProductId(Integer productId) {
+        return inventoryRepository.findInventoryByProductId(productId);
     }
 }
 

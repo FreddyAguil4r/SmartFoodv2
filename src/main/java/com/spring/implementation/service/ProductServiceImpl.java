@@ -5,13 +5,16 @@ package com.spring.implementation.service;
 import com.spring.implementation.domain.model.Category;
 import com.spring.implementation.domain.model.Inventory;
 import com.spring.implementation.domain.model.Product;
+import com.spring.implementation.domain.model.Unit;
 import com.spring.implementation.domain.repository.ProductRepository;
 import com.spring.implementation.domain.service.CategoryService;
 import com.spring.implementation.domain.service.InventoryService;
 import com.spring.implementation.domain.service.ProductService;
-import com.spring.implementation.dto.CategoriesAndProductsDto;
-import com.spring.implementation.dto.ShortProductDto;
-import com.spring.implementation.dto.UpdateProductDto;
+import com.spring.implementation.domain.service.UnitService;
+import com.spring.implementation.dto.domain.CategoryDto;
+import com.spring.implementation.dto.domain.ProductDto;
+import com.spring.implementation.dto.save.SaveProductDto;
+import com.spring.implementation.dto.update.UpdateProductDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -23,122 +26,73 @@ import java.util.NoSuchElementException;
 
 @Service
 public class ProductServiceImpl implements ProductService {
-
+    static final String PRODUCT_NOT_FOUND = "No se encontró un producto con ID:  ";
     private ProductRepository productRepository;
-
     private CategoryService categoryService;
-
     private InventoryService inventoryService;
+    private UnitService unitService;
 
     @Autowired
-    public ProductServiceImpl(ProductRepository productRepository, CategoryService categoryService, InventoryService inventoryService) {
+    public ProductServiceImpl(ProductRepository productRepository, CategoryService categoryService, InventoryService inventoryService, UnitService unitService) {
         this.productRepository = productRepository;
         this.categoryService = categoryService;
         this.inventoryService = inventoryService;
+        this.unitService = unitService;
     }
 
     public ProductServiceImpl() {
     }
 
     @Override
-    public Product createProduct(Product product) {
+    public ProductDto createProduct(SaveProductDto product) {
+        Product newProduct = new Product();
+        newProduct.setName(product.getName());
 
-        Category category = categoryService.getCategoryById(product.getCategory().getId());
-        if (category == null) {
-            throw new NoSuchElementException("Category not found with ID: " + product.getCategory().getId());
-        }
+        Category category = categoryService.getCategoryById(product.getCategoryId());
 
-        // Actualizar el valor de la categoría
-        float currentTotal = category.getTotalValuesCategories();
-        float valorASumar = product.getAmount() * product.getUnitCost();
+        newProduct.setCategory(category);
 
-        product.setWarehouseValue(valorASumar);
-        category.setTotalValuesCategories(currentTotal + valorASumar);
-        categoryService.updateCategory(category.getId(), category);
+        Inventory inventory = new Inventory();
+        inventory.setCreationDate(new Date());
+        inventory.setModificationDate(new Date());
+        inventory.setTotalInventory(0);
+        inventory.setQuantity(0);
+        inventory.setProduct(newProduct);
 
-        // Actualizar el valor del inventario
-        Inventory inventory = inventoryService.getLatestInventory();
-        if (inventory == null) {
-            // Si no hay inventarios registrados, crear uno nuevo
-            inventory = new Inventory();
-            inventory.setCurrentSystem(new Date());
-            inventory.setTotalInventory(product.getAmount());
-            inventoryService.createInventory(inventory);
-        } else {
-            inventory.setTotalInventory(inventory.getTotalInventory() + valorASumar);
-            inventoryService.updateInventory(inventory.getId(), inventory);
-        }
-        product.setCategory(category);
-        product.setDatePurchase(new Date());
-        return productRepository.save(product);
+        Unit unit = unitService.getUnitById(product.getUnitId());
+        inventory.setUnit(unit);
 
+        Product saveProduct = productRepository.save(newProduct);
+        inventoryService.createInventory(inventory);
+
+        return ProductDto.builder()
+                .name(saveProduct.getName())
+                .category(CategoryDto.builder()
+                        .name(saveProduct.getCategory().getName())
+                        .build())
+                .build();
     }
 
     @Override
     public ResponseEntity<Void> deleteProduct(Integer productId) {
-
-        Product productToDelete = productRepository.findById(productId)
-                .orElseThrow(() -> new EntityNotFoundException("Product not found"));
-
-        float valorARestar = productToDelete.getAmount()*productToDelete.getUnitCost();
-
-        // Restar el valor del producto de la categoría
-        Category category = productToDelete.getCategory();
-        if (category != null) {
-            float currentTotal = category.getTotalValuesCategories();
-            category.setTotalValuesCategories(currentTotal - valorARestar);
-            categoryService.updateCategory(category.getId(), category);
-        }
-
-        // registrar un nuevo inventory con el nuevo valor, no se actualiza, sino se registra uno nuevo
-        Inventory inventory = inventoryService.getLatestInventory();
-        if (inventory != null) {
-            Inventory newInventory = new Inventory();
-            newInventory.setCurrentSystem(new Date());
-            newInventory.setTotalInventory(inventory.getTotalInventory() - valorARestar);
-            inventoryService.createInventory(newInventory);
-        }
-
-        productRepository.delete(productToDelete);
-
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new NoSuchElementException(PRODUCT_NOT_FOUND + productId));
+        productRepository.delete(product);
         return ResponseEntity.ok().build();
     }
-
-    //getProductBySupplierId
-
-
 
     @Override
     public Product getProductById(Integer productId) {
         return productRepository.findById(productId)
-                .orElseThrow(() -> new NoSuchElementException("Product not found with ID: " + productId));
+                .orElseThrow(() -> new NoSuchElementException(PRODUCT_NOT_FOUND + productId));
     }
 
     @Override
     public Product updateProduct(Integer productId, UpdateProductDto productRequest) {
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new NoSuchElementException("Product not found with ID: " + productId));
-
-        Category category = product.getCategory();
-        Inventory inventory = inventoryService.getLatestInventory();
-
-        float currentTotal = category.getTotalValuesCategories();
-        float valorARestar = product.getAmount() * product.getUnitCost();
-        category.setTotalValuesCategories(currentTotal - valorARestar);
-        inventory.setTotalInventory(inventory.getTotalInventory() - valorARestar);
-        float newValueCategory = category.getTotalValuesCategories();
-        float newValueInventory = inventory.getTotalInventory();
+                .orElseThrow(() -> new EntityNotFoundException(PRODUCT_NOT_FOUND+ productId));
 
         product.setName(productRequest.getName());
-        product.setUnitCost(productRequest.getUnitCost());
-        product.setAmount(productRequest.getAmount());
-
-
-        float valorASumar = productRequest.getAmount() * productRequest.getUnitCost();
-        category.setTotalValuesCategories(newValueCategory + valorASumar);
-        categoryService.updateCategory(category.getId(), category);
-        inventory.setTotalInventory(newValueInventory + valorASumar);
-        inventoryService.updateInventory(inventory.getId(), inventory);
 
         return productRepository.save(product);
     }
@@ -148,47 +102,13 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findAll();
     }
 
-    @Override
-    public List<Product> getAllProductsByCategory(Integer categoryId) {
-
-        Category category = categoryService.getCategoryById(categoryId);
-        if (category == null) {
-            throw new NoSuchElementException("Category not found with ID: " + categoryId);
-        }
-        return productRepository.findByCategoryId(categoryId);
-    }
-
-    @Override
-    public List<CategoriesAndProductsDto> getAllCategoriesWithProducts() {
-        List<Category> categories = categoryService.getAllCategories();
-        return categories.stream()
-                .map(category -> {
-                    CategoriesAndProductsDto categoriesAndProductsDto = new CategoriesAndProductsDto();
-                    categoriesAndProductsDto.setName(category.getName());
-                    categoriesAndProductsDto.setTotalValuesCategories(category.getTotalValuesCategories());
-                    categoriesAndProductsDto.setProducts(
-                            productRepository.findByCategoryId(category.getId())
-                                    .stream()
-                                    .map(product -> {
-                                        ShortProductDto shortProductDto = new ShortProductDto();
-                                        shortProductDto.setName(product.getName());
-                                        shortProductDto.setAmount(product.getAmount());
-                                        shortProductDto.setUnitCost(product.getUnitCost());
-                                        shortProductDto.setDatePurchase(product.getDatePurchase());
-                                        shortProductDto.setDueDate(product.getDueDate());
-                                        return shortProductDto;
-                                    })
-                                    .toList()
-                    );
-                    return categoriesAndProductsDto;
-                })
-                .toList();
-    }
-
-    @Override
-    public boolean findProductBySupplierId(Integer supplierId) {
-        return productRepository.existsBySupplierId(supplierId);
-    }
-
+//    @Override
+//    public List<Product> getAllProductsByCategory(Integer categoryId) {
+//        return null;
+//    }
+//
+//    @Override
+//    public List<CategoriesAndProductsDto> getAllCategoriesWithProducts() {
+//        return null;
+//    }
 }
-

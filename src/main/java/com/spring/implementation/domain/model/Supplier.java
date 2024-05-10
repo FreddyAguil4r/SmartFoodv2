@@ -8,12 +8,15 @@ import lombok.Setter;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "supplier")
+@Table(name = "suppliers")
 public class Supplier {
 
     @Id
@@ -29,5 +32,8 @@ public class Supplier {
 
     @Column(name = "address")
     private String address;
+
+    @OneToMany(mappedBy = "supplier")
+    private Set<ProductsPurchase> purchases = new HashSet<>();
 
 }

@@ -2,6 +2,7 @@ package com.spring.implementation.domain.service;
 
 
 import com.spring.implementation.domain.model.Inventory;
+import com.spring.implementation.dto.update.UpdateInventoryDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -17,17 +18,14 @@ public interface InventoryService {
     Inventory getInventoryById(Integer inventoryId);
 
     //update
-    Inventory updateInventory(Integer inventoryId, Inventory inventoryRequest);
+    Inventory updateInventory(Integer inventoryId, UpdateInventoryDto inventoryRequest);
 
     //delete
-    ResponseEntity<?> deleteInventory(Integer inventoryId);
+    ResponseEntity<Void> deleteInventory(Integer inventoryId);
 
     //getAll
     List<Inventory> getAllInventories();
 
-    //getLatest
-    Inventory getLatestInventory();
-
-
+    Inventory findInventoryByProductId(Integer productId);
 
 }

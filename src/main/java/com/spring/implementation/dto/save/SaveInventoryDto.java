@@ -1,4 +1,4 @@
-package com.spring.implementation.dto;
+package com.spring.implementation.dto.save;
 
 public class SaveInventoryDto {
 

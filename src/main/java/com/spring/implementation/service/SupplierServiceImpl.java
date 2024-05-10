@@ -2,7 +2,6 @@ package com.spring.implementation.service;
 
 import com.spring.implementation.domain.model.Supplier;
 import com.spring.implementation.domain.repository.SupplierRepository;
-import com.spring.implementation.domain.service.ProductService;
 import com.spring.implementation.domain.service.SupplierService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -12,20 +11,17 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
-public class SupplierServiceImp implements SupplierService {
+public class SupplierServiceImpl implements SupplierService {
 
     static final String SUPPLIER_NOT_FOUND = "Supplier not found with ID: ";
-
     private SupplierRepository supplierRepository;
-    private ProductService productService;
 
     @Autowired
-    public SupplierServiceImp(SupplierRepository supplierRepository, ProductService productService) {
+    public SupplierServiceImpl(SupplierRepository supplierRepository) {
         this.supplierRepository = supplierRepository;
-        this.productService = productService;
     }
 
-    public SupplierServiceImp() {
+    public SupplierServiceImpl() {
     }
 
     @Override
@@ -53,11 +49,6 @@ public class SupplierServiceImp implements SupplierService {
     public ResponseEntity<Void> deleteSupplier(Integer supplierId) {
         Supplier supplier = supplierRepository.findById(supplierId)
                 .orElseThrow(() -> new NoSuchElementException(SUPPLIER_NOT_FOUND + supplierId));
-
-        if (productService.findProductBySupplierId(supplierId)) {
-            return ResponseEntity.badRequest().build();
-        }
-
         supplierRepository.delete(supplier);
         return ResponseEntity.ok().build();
     }

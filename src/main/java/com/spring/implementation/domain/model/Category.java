@@ -1,20 +1,19 @@
 package com.spring.implementation.domain.model;
 
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "category")
+@Table(name = "categories")
 public class Category {
 
     @Id
@@ -25,11 +24,7 @@ public class Category {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "total_values_categories")
-    private float totalValuesCategories;
-
-    @ManyToOne
-    @JoinColumn(name = "inventory_id")
-    private Inventory inventory;
-
+    //productos one to many
+    @OneToMany(mappedBy = "category")
+    private List<Product> products = new ArrayList<>();
 }
