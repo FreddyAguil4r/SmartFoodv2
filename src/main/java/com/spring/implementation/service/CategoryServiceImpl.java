@@ -97,8 +97,10 @@ public class CategoryServiceImpl implements CategoryService {
             for (Product product : products) {
                 ProductWithQuantityDto productWithQuantityDto = new ProductWithQuantityDto();
                 productWithQuantityDto.setProductName(product.getName());
+                productWithQuantityDto.setProductId(product.getId());
                 Inventory inventory = inventoryService.findInventoryByProductId(product.getId());
                 productWithQuantityDto.setQuantity(inventory.getQuantity());
+                productWithQuantityDto.setTotalInventory(inventory.getTotalInventory());
                 listProductWithQuantityDto.add(productWithQuantityDto);
                 categoryWithProductQttyDto.setProducts(listProductWithQuantityDto);
             }

@@ -2,6 +2,8 @@ package com.spring.implementation.domain.service;
 
 
 import com.spring.implementation.domain.model.Product;
+import com.spring.implementation.dto.ProductWithQuantityDto;
+import com.spring.implementation.dto.RequestRestarProductoInventarioDto;
 import com.spring.implementation.dto.domain.ProductDto;
 import com.spring.implementation.dto.save.SaveProductDto;
 import com.spring.implementation.dto.update.UpdateProductDto;
@@ -26,6 +28,10 @@ public interface ProductService {
     ResponseEntity<Void> deleteProduct(Integer productId);
 
     List<Product> getAllProducts();
+
+    ResponseEntity<Void> substractProduct(RequestRestarProductoInventarioDto request);
+
+    List<ProductWithQuantityDto> getProductsWithQuantity();
 
 
 //    //getAllProductsByCategory

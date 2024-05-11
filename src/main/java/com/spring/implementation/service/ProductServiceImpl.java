@@ -11,6 +11,8 @@ import com.spring.implementation.domain.service.CategoryService;
 import com.spring.implementation.domain.service.InventoryService;
 import com.spring.implementation.domain.service.ProductService;
 import com.spring.implementation.domain.service.UnitService;
+import com.spring.implementation.dto.ProductWithQuantityDto;
+import com.spring.implementation.dto.RequestRestarProductoInventarioDto;
 import com.spring.implementation.dto.domain.CategoryDto;
 import com.spring.implementation.dto.domain.ProductDto;
 import com.spring.implementation.dto.save.SaveProductDto;
@@ -20,6 +22,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import jakarta.persistence.EntityNotFoundException;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -77,6 +81,8 @@ public class ProductServiceImpl implements ProductService {
     public ResponseEntity<Void> deleteProduct(Integer productId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new NoSuchElementException(PRODUCT_NOT_FOUND + productId));
+        Inventory inventory = inventoryService.findInventoryByProductId(productId);
+        inventoryService.deleteInventory(inventory.getId());
         productRepository.delete(product);
         return ResponseEntity.ok().build();
     }
@@ -100,6 +106,28 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<Product> getAllProducts() {
         return productRepository.findAll();
+    }
+
+    @Override
+    public ResponseEntity<Void> substractProduct(RequestRestarProductoInventarioDto request) {
+
+        return null;
+    }
+
+    @Override
+    public List<ProductWithQuantityDto> getProductsWithQuantity() {
+        List<ProductWithQuantityDto> listProductWithQuantityDto = new ArrayList<>();
+        List<Product> products = productRepository.findAll();
+        for (Product product : products) {
+            ProductWithQuantityDto productWithQuantityDto = new ProductWithQuantityDto();
+            productWithQuantityDto.setProductName(product.getName());
+            productWithQuantityDto.setProductId(product.getId());
+            Inventory inventory = inventoryService.findInventoryByProductId(product.getId());
+            productWithQuantityDto.setQuantity(inventory.getQuantity());
+            productWithQuantityDto.setTotalInventory(inventory.getTotalInventory());
+            listProductWithQuantityDto.add(productWithQuantityDto);
+        }
+        return listProductWithQuantityDto;
     }
 
 //    @Override

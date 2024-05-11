@@ -4,6 +4,7 @@ package com.spring.implementation.controller;
 
 import com.spring.implementation.domain.model.Product;
 import com.spring.implementation.domain.service.ProductService;
+import com.spring.implementation.dto.ProductWithQuantityDto;
 import com.spring.implementation.dto.domain.ProductDto;
 import com.spring.implementation.dto.save.SaveProductDto;
 import com.spring.implementation.dto.update.UpdateProductDto;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
 
+import java.util.List;
 
 
 @RestController
@@ -40,7 +42,6 @@ public class ProductController {
         return productService.updateProduct(productId, productRequest);
     }
 
-
     @DeleteMapping("/{productId}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Integer productId) {
         return productService.deleteProduct(productId);
@@ -51,6 +52,11 @@ public class ProductController {
         return productService.getAllProducts();
     }
 
+
+    @GetMapping("/quantity")
+    public List<ProductWithQuantityDto> getProductsWithQuantity(){
+        return productService.getProductsWithQuantity();
+    }
 
     //getAllProductsByCategory
 //    @GetMapping("/category/{categoryId}")
