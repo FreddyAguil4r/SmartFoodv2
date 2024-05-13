@@ -3,6 +3,7 @@ package com.spring.implementation.domain.service;
 
 import com.spring.implementation.domain.model.Category;
 import com.spring.implementation.dto.CategoryWithProductQttyDto;
+import com.spring.implementation.dto.domain.TotalsWithCategoryDto;
 import com.spring.implementation.dto.save.SaveCategoryDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -31,4 +32,9 @@ public interface CategoryService {
 
     //getCategoryWithProductsAndQuantity
     List<CategoryWithProductQttyDto> getCategoryWithProductsAndQuantity();
+
+    //getTotalInventoryWithTotalsByCategory
+    TotalsWithCategoryDto getTotalInventoryWithTotalsByCategory();
+
+
 }

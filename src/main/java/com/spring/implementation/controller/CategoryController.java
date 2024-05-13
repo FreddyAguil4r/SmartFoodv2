@@ -4,6 +4,7 @@ import com.spring.implementation.domain.model.Category;
 import com.spring.implementation.domain.service.CategoryService;
 import com.spring.implementation.dto.CategoryWithProductQttyDto;
 import com.spring.implementation.dto.domain.CategoryDto;
+import com.spring.implementation.dto.domain.TotalsWithCategoryDto;
 import com.spring.implementation.dto.save.SaveCategoryDto;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -52,4 +53,10 @@ public class CategoryController {
     public List<CategoryWithProductQttyDto> getAllCategoriesDto() {
         return categoryService.getCategoryWithProductsAndQuantity();
     }
+
+    @GetMapping("/quantity")
+    public TotalsWithCategoryDto getTotalCategoryWithInventory() {
+        return categoryService.getTotalInventoryWithTotalsByCategory();
+    }
+
 }

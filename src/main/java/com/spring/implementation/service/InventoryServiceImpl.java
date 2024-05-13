@@ -67,5 +67,16 @@ public class InventoryServiceImpl implements InventoryService {
     public Inventory findInventoryByProductId(Integer productId) {
         return inventoryRepository.findInventoryByProductId(productId);
     }
+
+    @Override
+    public int getTotalQuantity() {
+        return inventoryRepository.findAll().stream().mapToInt(Inventory::getQuantity).sum();
+    }
+
+    @Override
+    public float getTotalInventory() {
+        return (float) inventoryRepository.findAll().stream().mapToDouble(Inventory::getTotalInventory).sum();
+    }
+
 }
 

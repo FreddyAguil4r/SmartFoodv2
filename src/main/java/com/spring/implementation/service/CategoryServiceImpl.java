@@ -6,8 +6,10 @@ import com.spring.implementation.domain.model.Product;
 import com.spring.implementation.domain.repository.CategoryRepository;
 import com.spring.implementation.domain.service.CategoryService;
 import com.spring.implementation.domain.service.InventoryService;
+import com.spring.implementation.dto.CategoryTotalDto;
 import com.spring.implementation.dto.CategoryWithProductQttyDto;
 import com.spring.implementation.dto.ProductWithQuantityDto;
+import com.spring.implementation.dto.domain.TotalsWithCategoryDto;
 import com.spring.implementation.dto.save.SaveCategoryDto;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -108,4 +110,37 @@ public class CategoryServiceImpl implements CategoryService {
         }
         return listCategoryWithProductQttyDto;
     }
+
+    @Override
+    public TotalsWithCategoryDto getTotalInventoryWithTotalsByCategory() {
+
+        List<Category> categories = categoryRepository.findAll();
+        List<CategoryTotalDto> listCategoryTotalDto = new ArrayList<>();
+
+        for (Category category : categories) {
+
+            List<Product> products = category.getProducts();
+            int sumQuantity = 0;
+            float  sumTotalInventory = 0;
+
+            CategoryTotalDto categoryTotal = new CategoryTotalDto();
+
+            for (Product product : products) {
+                Inventory inventory = inventoryService.findInventoryByProductId(product.getId());
+                sumQuantity += inventory.getQuantity();
+                sumTotalInventory += inventory.getTotalInventory();
+            }
+            categoryTotal.setName(category.getName());
+            categoryTotal.setTotalCategory(sumTotalInventory);
+            categoryTotal.setTotalCategoryQuantity(sumQuantity);
+            listCategoryTotalDto.add(categoryTotal);
+
+        }
+        return TotalsWithCategoryDto.builder()
+                .totalCantidad(inventoryService.getTotalQuantity())
+                .totalInventario(inventoryService.getTotalInventory())
+                .categories(listCategoryTotalDto)
+                .build();
+    }
+
 }

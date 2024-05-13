@@ -28,4 +28,8 @@ public interface InventoryService {
 
     Inventory findInventoryByProductId(Integer productId);
 
+    int getTotalQuantity();
+
+    float getTotalInventory();
+
 }
