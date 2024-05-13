@@ -31,7 +31,7 @@ public class Product {
     @JsonIgnore
     private Category category;
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<ProductsPurchase> purchases = new HashSet<>();
 }
