@@ -43,8 +43,4 @@ public class ProductsPurchaseController {
         return productsPurchaseService.getAllProductsPurchases();
     }
 
-
-
-
-
 }

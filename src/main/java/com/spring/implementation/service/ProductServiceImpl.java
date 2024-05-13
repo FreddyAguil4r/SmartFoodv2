@@ -2,20 +2,15 @@ package com.spring.implementation.service;
 
 
 
-import com.spring.implementation.domain.model.Category;
-import com.spring.implementation.domain.model.Inventory;
-import com.spring.implementation.domain.model.Product;
-import com.spring.implementation.domain.model.Unit;
+import com.spring.implementation.domain.model.*;
 import com.spring.implementation.domain.repository.ProductRepository;
-import com.spring.implementation.domain.service.CategoryService;
-import com.spring.implementation.domain.service.InventoryService;
-import com.spring.implementation.domain.service.ProductService;
-import com.spring.implementation.domain.service.UnitService;
+import com.spring.implementation.domain.service.*;
 import com.spring.implementation.dto.ProductWithQuantityDto;
 import com.spring.implementation.dto.RequestRestarProductoInventarioDto;
 import com.spring.implementation.dto.domain.CategoryDto;
 import com.spring.implementation.dto.domain.ProductDto;
 import com.spring.implementation.dto.save.SaveProductDto;
+import com.spring.implementation.dto.update.UpdateInventoryDto;
 import com.spring.implementation.dto.update.UpdateProductDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,10 +18,7 @@ import org.springframework.stereotype.Service;
 
 import jakarta.persistence.EntityNotFoundException;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -35,13 +27,19 @@ public class ProductServiceImpl implements ProductService {
     private CategoryService categoryService;
     private InventoryService inventoryService;
     private UnitService unitService;
+    private ProductsPurchaseService productsPurchaseService;
 
     @Autowired
-    public ProductServiceImpl(ProductRepository productRepository, CategoryService categoryService, InventoryService inventoryService, UnitService unitService) {
+    public ProductServiceImpl(ProductRepository productRepository,
+                              CategoryService categoryService,
+                              InventoryService inventoryService,
+                              UnitService unitService,
+                              ProductsPurchaseService productsPurchaseService) {
         this.productRepository = productRepository;
         this.categoryService = categoryService;
         this.inventoryService = inventoryService;
         this.unitService = unitService;
+        this.productsPurchaseService = productsPurchaseService;
     }
 
     public ProductServiceImpl() {
@@ -111,7 +109,38 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ResponseEntity<Void> substractProduct(RequestRestarProductoInventarioDto request) {
 
-        return null;
+        int cantidadARestar = request.getCantidad();
+
+        Inventory inventory = inventoryService.findInventoryByProductId(request.getIdProducto());
+
+        List<ProductsPurchase> productsPurchaseList = productsPurchaseService.findAllByProductId(request.getIdProducto());
+
+        //Order by purchase date
+        productsPurchaseList.sort(Comparator.comparing(ProductsPurchase::getPurchaseDate));
+
+        float valorTotalARestar = 0;
+
+        for (ProductsPurchase productsPurchase : productsPurchaseList) {
+            if (productsPurchase.getPurchaseStock() != 0) {
+                if (productsPurchase.getAmount() >= request.getCantidad()) {
+                    valorTotalARestar += productsPurchase.getUnitCost() * request.getCantidad();
+                    productsPurchase.setPurchaseStock(productsPurchase.getPurchaseStock() - request.getCantidad());
+                    productsPurchaseService.updateProductsPurchase(productsPurchase.getId(), productsPurchase);
+                    break;
+                } else{
+                    valorTotalARestar += productsPurchase.getUnitCost() * productsPurchase.getPurchaseStock();
+                    request.setCantidad(request.getCantidad() - productsPurchase.getPurchaseStock());
+                    productsPurchase.setPurchaseStock(0);
+                    productsPurchaseService.updateProductsPurchase(productsPurchase.getId(), productsPurchase);
+                }
+            }
+        }
+        UpdateInventoryDto inventoryUpdate = new UpdateInventoryDto();
+        inventoryUpdate.setQuantity(inventory.getQuantity() - cantidadARestar);
+        inventoryUpdate.setTotalInventory(inventory.getTotalInventory() - valorTotalARestar);
+        inventoryService.updateInventory(inventory.getId(), inventoryUpdate);
+
+        return ResponseEntity.ok().build();
     }
 
     @Override
@@ -129,14 +158,4 @@ public class ProductServiceImpl implements ProductService {
         }
         return listProductWithQuantityDto;
     }
-
-//    @Override
-//    public List<Product> getAllProductsByCategory(Integer categoryId) {
-//        return null;
-//    }
-//
-//    @Override
-//    public List<CategoriesAndProductsDto> getAllCategoriesWithProducts() {
-//        return null;
-//    }
 }

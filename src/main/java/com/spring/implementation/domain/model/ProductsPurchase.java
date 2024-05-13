@@ -42,4 +42,7 @@ public class ProductsPurchase {
     @ManyToOne
     @JoinColumn(name = "unit_id")
     private Unit unit;
+
+    @Column(name = "purchase_stock")
+    private int purchaseStock;
 }

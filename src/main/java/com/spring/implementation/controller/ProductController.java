@@ -5,6 +5,7 @@ package com.spring.implementation.controller;
 import com.spring.implementation.domain.model.Product;
 import com.spring.implementation.domain.service.ProductService;
 import com.spring.implementation.dto.ProductWithQuantityDto;
+import com.spring.implementation.dto.RequestRestarProductoInventarioDto;
 import com.spring.implementation.dto.domain.ProductDto;
 import com.spring.implementation.dto.save.SaveProductDto;
 import com.spring.implementation.dto.update.UpdateProductDto;
@@ -25,7 +26,6 @@ import java.util.List;
 public class ProductController {
 
     private ProductService productService;
-    private final ModelMapper mapper;
 
     @PostMapping
     public ProductDto createProduct(@Valid @RequestBody SaveProductDto resource) {
@@ -58,16 +58,11 @@ public class ProductController {
         return productService.getProductsWithQuantity();
     }
 
-    //getAllProductsByCategory
-//    @GetMapping("/category/{categoryId}")
-//    public Iterable<Product> getAllProductsByCategory(@PathVariable Integer categoryId) {
-//        return productService.getAllProductsByCategory(categoryId);
-//    }
-//
-//
-//    //getAllCategoriesWithProducts
-//    @GetMapping("/categories")
-//    public Iterable<CategoriesAndProductsDto> getAllCategoriesWithProducts() {
-//        return productService.getAllCategoriesWithProducts();
-//    }
+    //substractProduct
+    @PutMapping("/substract")
+    public ResponseEntity<Void> substractProduct(@RequestBody RequestRestarProductoInventarioDto request){
+        return productService.substractProduct(request);
+    }
+
+
 }

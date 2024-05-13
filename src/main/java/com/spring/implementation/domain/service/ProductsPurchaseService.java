@@ -20,5 +20,7 @@ public interface ProductsPurchaseService {
     ResponseEntity<Void> deleteProductsPurchase(Integer productPurchaseId);
     //getAll
     List<ProductsPurchase> getAllProductsPurchases();
-    
+
+    //findAllByProductId
+    List<ProductsPurchase> findAllByProductId(Integer productId);
 }

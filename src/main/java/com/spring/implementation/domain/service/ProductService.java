@@ -33,11 +33,4 @@ public interface ProductService {
 
     List<ProductWithQuantityDto> getProductsWithQuantity();
 
-
-//    //getAllProductsByCategory
-//    List<Product> getAllProductsByCategory(Integer categoryId);
-//
-//    //getAllCategoriesWithProducts
-//    List<CategoriesAndProductsDto> getAllCategoriesWithProducts();
-
 }
