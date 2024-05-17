@@ -1,6 +1,7 @@
 package com.spring.implementation.controller;
 
 import com.spring.implementation.domain.service.BigQueryService;
+import com.spring.implementation.dto.PronosticoDto;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +19,13 @@ public class BigQueryController {
         private BigQueryService bigQueryService;
 
         @GetMapping("/query")
-        public void getQueryResult() throws Exception {
-            bigQueryService.getQueryResult();
+        public  List<PronosticoDto> getQueryResult() throws Exception {
+            return bigQueryService.getQueryResult();
         }
+
+        @GetMapping("/callsp")
+        public void callSP() throws Exception {
+            bigQueryService.callSP();
+        }
+
 }
