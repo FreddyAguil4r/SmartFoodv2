@@ -6,13 +6,13 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.1.2</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath/>
 	</parent>
 	<groupId>com.spring.implementation</groupId>
 	<artifactId>RestApi</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>RestApi</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Project SmartFood</description>
 	<properties>
 		<java.version>17</java.version>
 	</properties>
@@ -43,32 +43,34 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>com.mysql</groupId>
 			<artifactId>mysql-connector-j</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/com.google.cloud.sql/mysql-socket-factory -->
-		<!-- https://mvnrepository.com/artifact/com.google.cloud.sql/mysql-socket-factory -->
 		<dependency>
 			<groupId>com.google.cloud.sql</groupId>
 			<artifactId>mysql-socket-factory</artifactId>
 			<version>1.10.0</version>
 		</dependency>
-
 		<dependency>
 			<groupId>com.google.cloud</groupId>
 			<artifactId>spring-cloud-gcp-starter-sql-mysql</artifactId>
 		</dependency>
-
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt</artifactId>
+			<version>0.9.1</version>
+		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
@@ -92,9 +94,7 @@
 			<groupId>com.google.cloud</groupId>
 			<artifactId>google-cloud-bigquery</artifactId>
 		</dependency>
-
 	</dependencies>
-
 	<build>
 		<plugins>
 			<plugin>
@@ -103,5 +103,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
 </project>
