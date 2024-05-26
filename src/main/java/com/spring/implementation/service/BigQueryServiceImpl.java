@@ -7,6 +7,7 @@ import com.spring.implementation.domain.service.ProductService;
 import com.spring.implementation.dto.MensualDto;
 import com.spring.implementation.dto.ObjectMensualDto;
 import com.spring.implementation.dto.PronosticoDto;
+import com.spring.implementation.exception.ProductNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -58,7 +59,7 @@ public class BigQueryServiceImpl implements BigQueryService {
 
         TableResult result = queryJob.getQueryResults();
 
-        List<Product> products = productService.getAllProducts();
+        List<Product> products = getAllProducts();
 
         for (FieldValueList row : result.iterateAll()) {
 
@@ -180,7 +181,7 @@ public class BigQueryServiceImpl implements BigQueryService {
 
         TableResult result = queryJob.getQueryResults();
 
-        List<Product> products = productService.getAllProducts();
+        List<Product> products = getAllProducts();
 
         for (FieldValueList row : result.iterateAll()) {
 
@@ -195,7 +196,10 @@ public class BigQueryServiceImpl implements BigQueryService {
             pronosticoDto.setCantidadComprar((int) cantidadAComprar);
             pronosticoDto.setProductId(productId);
 
-            Product product = products.stream().filter(p -> p.getId() == productId).findFirst().orElse(null);
+            Product product = products.stream()
+                    .filter(p -> p.getId() == productId)
+                    .findFirst()
+                    .orElseThrow(() -> new ProductNotFoundException("Product", productId));
 
             pronosticoDto.setProductName(product.getName());
             pronosticoDtoList.add(pronosticoDto);
@@ -204,6 +208,10 @@ public class BigQueryServiceImpl implements BigQueryService {
         pronosticoDtoList.sort((p1, p2) -> p2.getCantidadComprar() - p1.getCantidadComprar());
 
         return pronosticoDtoList;
+    }
+
+    private List<Product> getAllProducts() {
+        return productService.getAllProducts();
     }
 
     @Override

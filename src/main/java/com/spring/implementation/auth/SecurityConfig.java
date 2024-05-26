@@ -24,6 +24,7 @@ public class SecurityConfig {
         this.userDetailsService = customUserDetailsService;
         this.jwtAuthorizationFilter = jwtAuthorizationFilter;
     }
+
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http, PasswordEncoder passwordEncoder)
             throws Exception {
@@ -37,15 +38,17 @@ public class SecurityConfig {
         http
                 .csrf((csrf) -> csrf.disable())
                 .authorizeHttpRequests(authorize ->
-                        authorize.requestMatchers("/auth/**").permitAll()
-                                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**").permitAll()
-                                .requestMatchers("/product/**").permitAll()
-                                .requestMatchers("/inventory/**").permitAll()
-                                .requestMatchers("/bigquery/**").permitAll()
-                                .requestMatchers("/purchase/**").permitAll()
-                                .requestMatchers("/supplier/**").permitAll()
-                                .requestMatchers("/unit/**").permitAll()
-                                .requestMatchers("/user/**").permitAll()
+                        authorize
+                                .requestMatchers("/**").permitAll()
+//                                .requestMatchers("/auth/**").permitAll()
+//                                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**").permitAll()
+//                                .requestMatchers("/product/**").permitAll()
+//                                .requestMatchers("/inventory/**").permitAll()
+//                                .requestMatchers("/bigquery/**").permitAll()
+//                                .requestMatchers("/purchase/**").permitAll()
+//                                .requestMatchers("/supplier/**").permitAll()
+//                                .requestMatchers("/unit/**").permitAll()
+//                                .requestMatchers("/user/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .sessionManagement(session ->

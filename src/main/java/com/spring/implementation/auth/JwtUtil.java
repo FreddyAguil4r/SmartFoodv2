@@ -16,7 +16,6 @@ public class JwtUtil {
     private long accessTokenValidity = 60*60*1000;
     private final String TOKEN_HEADER = "Authorization";
     private final String TOKEN_PREFIX = "Bearer ";
-
     private final JwtParser jwtParser;
 
     public JwtUtil(){
