@@ -91,6 +91,8 @@ public class CategoryServiceImpl implements CategoryService {
 
         List<Category> categories = categoryRepository.findAll();
 
+        List<Inventory> inventories = inventoryService.getAllInventories();
+
         for (Category category : categories) {
             CategoryWithProductQttyDto categoryWithProductQttyDto = new CategoryWithProductQttyDto();
             categoryWithProductQttyDto.setCategoryName(category.getName());
@@ -100,7 +102,12 @@ public class CategoryServiceImpl implements CategoryService {
                 ProductWithQuantityDto productWithQuantityDto = new ProductWithQuantityDto();
                 productWithQuantityDto.setProductName(product.getName());
                 productWithQuantityDto.setProductId(product.getId());
-                Inventory inventory = inventoryService.findInventoryByProductId(product.getId());
+
+                Inventory inventory = inventories.stream()
+                        .filter(i -> i.getProduct().getId() == product.getId())
+                        .findFirst()
+                        .orElseThrow(() -> new NoSuchElementException("No se encontró inventario para el producto con ID: " + product.getId()));
+
                 productWithQuantityDto.setQuantity(inventory.getQuantity());
                 productWithQuantityDto.setTotalInventory(inventory.getTotalInventory());
                 listProductWithQuantityDto.add(productWithQuantityDto);

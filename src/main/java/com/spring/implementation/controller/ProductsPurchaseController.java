@@ -38,7 +38,7 @@ public class ProductsPurchaseController {
     public ProductsPurchase updatePurchase(@PathVariable Integer purchaseId, @RequestBody ProductsPurchase purchaseRequest) {
         return productsPurchaseService.updateProductsPurchase(purchaseId, purchaseRequest);
     }
-    @GetMapping
+    @GetMapping("/all")
     public Iterable<ProductsPurchase> getAllPurchases() {
         return productsPurchaseService.getAllProductsPurchases();
     }

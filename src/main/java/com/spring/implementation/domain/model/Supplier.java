@@ -1,6 +1,7 @@
 package com.spring.implementation.domain.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,7 +34,8 @@ public class Supplier {
     @Column(name = "address")
     private String address;
 
-    @OneToMany(mappedBy = "supplier")
+    @JsonIgnore
+    @OneToMany(mappedBy = "supplier", fetch = FetchType.LAZY)
     private Set<ProductsPurchase> purchases = new HashSet<>();
 
 }

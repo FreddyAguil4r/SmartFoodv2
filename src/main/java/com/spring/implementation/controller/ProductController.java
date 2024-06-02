@@ -52,7 +52,6 @@ public class ProductController {
         return productService.getAllProducts();
     }
 
-
     @GetMapping("/quantity")
     public List<ProductWithQuantityDto> getProductsWithQuantity(){
         return productService.getProductsWithQuantity();
